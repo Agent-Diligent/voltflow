@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop EcoFlow Products — VoltFlow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            midnight: '#0A1628', navy: '#0D1F3C', 'navy-light': '#122847',
+            horizon: '#1478D4', 'horizon-light': '#3A9BE8', 'horizon-dark': '#0D5FAA',
+            orange: '#F5821F', 'orange-light': '#FFA54F', 'orange-dark': '#D4661A',
+            steel: '#4A6080', 'grey-light': '#B8C5D1', 'grey-mid': '#6E8099',
+          },
+          fontFamily: { mono: ['Roboto Mono', 'monospace'], sans: ['Montserrat', 'sans-serif'] },
+          letterSpacing: { tightest: '-0.04em', tighter: '-0.03em' },
+          lineHeight: { relaxed: '1.7' },
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0A1628; }
+    ::-webkit-scrollbar-thumb { background: #1478D4; border-radius: 3px; }
+    .nav-blur { background: rgba(10,22,40,0.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+    .shop-bg {
+      background:
+        radial-gradient(ellipse 80% 40% at 50% 0%, rgba(20,120,212,0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 30% at 90% 50%, rgba(245,130,31,0.06) 0%, transparent 55%),
+        linear-gradient(160deg, #0A1628 0%, #0D1F3C 50%, #0A1628 100%);
+    }
+    .grain::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0;
+    }
+    .product-card {
+      background: linear-gradient(135deg, rgba(18,40,71,0.9) 0%, rgba(13,31,60,0.95) 100%);
+      border: 1px solid rgba(20,120,212,0.12);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 4px 16px -2px rgba(10,22,40,0.6), 0 16px 48px -8px rgba(10,22,40,0.7), 0 0 0 1px rgba(20,120,212,0.25);
+      border-color: rgba(20,120,212,0.28);
+    }
+    .filter-btn { transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+    .filter-btn.active { background: #1478D4; color: #fff; border-color: #1478D4; }
+    .btn-add {
+      transition: background 0.2s ease, transform 0.15s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s ease;
+    }
+    .btn-add:hover { transform: translateY(-1px); box-shadow: 0 4px 16px -4px rgba(245,130,31,0.5); }
+    .btn-add:active { transform: translateY(0); }
+
+    /* Cart drawer */
+    .cart-drawer {
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.34,1.2,0.64,1);
+    }
+    .cart-drawer.open { transform: translateX(0); }
+    .cart-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    .cart-overlay.open { opacity: 1; pointer-events: all; }
+
+    /* Toast */
+    .toast {
+      transform: translateY(20px);
+      opacity: 0;
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 4px 24px -4px rgba(245,130,31,0.35); }
+      50% { box-shadow: 0 4px 32px -2px rgba(245,130,31,0.55); }
+    }
+    .btn-orange-pulse { animation: pulse-glow 2.5s ease-in-out infinite; }
+  </style>
+</head>
+<body class="bg-midnight font-sans text-white overflow-x-hidden">
+
+  <!-- NAVIGATION -->
+  <nav class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 lg:h-20">
+        <a href="index.html" class="flex items-center shrink-0">
+          <img src="brand_assets/Brand_Logo1.png" alt="VoltFlow" class="h-10 lg:h-12 w-auto object-contain" style="max-width:180px;" />
+        </a>
+        <div class="hidden lg:flex items-center gap-8">
+          <a href="index.html#services" class="text-grey-light hover:text-white text-sm font-medium tracking-wide transition-colors duration-200">Services</a>
+          <a href="index.html#how-it-works" class="text-grey-light hover:text-white text-sm font-medium tracking-wide transition-colors duration-200">How It Works</a>
+          <a href="index.html#benefits" class="text-grey-light hover:text-white text-sm font-medium tracking-wide transition-colors duration-200">Benefits</a>
+          <a href="shop.html" class="text-white text-sm font-semibold tracking-wide border-b-2 border-orange pb-0.5">Shop</a>
+        </div>
+        <div class="hidden lg:flex items-center gap-3">
+          <a href="index.html#contact" class="text-sm font-medium text-grey-light hover:text-white transition-colors duration-200 px-4 py-2">Contact</a>
+          <!-- Cart button -->
+          <button id="cart-btn" class="relative flex items-center gap-2 text-sm font-medium text-grey-light hover:text-white transition-colors duration-200 px-4 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-horizon rounded-lg" aria-label="Open cart">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <span class="cart-badge hidden absolute -top-1 -right-1 w-5 h-5 rounded-full bg-orange text-white text-xs font-mono font-bold items-center justify-center"></span>
+          </button>
+          <a href="checkout.html" class="btn-orange-pulse bg-orange hover:bg-orange-light active:bg-orange-dark text-white text-sm font-semibold font-mono tracking-wide px-5 py-2.5 rounded-lg transition-colors duration-200">
+            Checkout
+          </a>
+        </div>
+        <!-- Mobile cart + menu -->
+        <div class="flex lg:hidden items-center gap-3">
+          <button id="cart-btn-mobile" class="relative p-2 text-grey-light hover:text-white" aria-label="Open cart">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <span class="cart-badge hidden absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-orange text-white text-xs font-mono font-bold items-center justify-center"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CART OVERLAY -->
+  <div id="cart-overlay" class="cart-overlay fixed inset-0 bg-black/60 z-40" onclick="closeCart()"></div>
+
+  <!-- CART DRAWER -->
+  <aside id="cart-drawer" class="cart-drawer fixed top-0 right-0 h-full w-full sm:w-96 bg-navy z-50 flex flex-col border-l border-white/10" style="box-shadow: -8px 0 40px rgba(10,22,40,0.6);">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-white/10">
+      <h2 class="font-mono font-bold text-lg text-white tracking-tight">Your Cart</h2>
+      <button onclick="closeCart()" class="p-1.5 text-grey-mid hover:text-white transition-colors duration-200 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-horizon" aria-label="Close cart">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div id="cart-items" class="flex-1 overflow-y-auto px-6 py-4 space-y-4"></div>
+
+    <div class="px-6 pb-6 border-t border-white/10 pt-4">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-grey-light text-sm font-medium">Subtotal</span>
+        <span id="cart-subtotal" class="font-mono font-bold text-white text-lg">$0</span>
+      </div>
+      <a href="checkout.html" class="block w-full bg-orange hover:bg-orange-light active:bg-orange-dark text-white text-sm font-semibold font-mono tracking-wide text-center px-6 py-3.5 rounded-xl transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-light focus-visible:ring-offset-2 focus-visible:ring-offset-navy">
+        Proceed to Checkout
+      </a>
+      <button onclick="closeCart()" class="mt-3 block w-full text-grey-mid hover:text-white text-xs font-medium text-center py-2 transition-colors duration-200">
+        Continue Shopping
+      </button>
+    </div>
+  </aside>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="toast fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-navy-light border border-horizon/30 rounded-xl px-5 py-3.5 pointer-events-none" style="box-shadow: 0 8px 32px rgba(10,22,40,0.5);">
+    <svg class="w-4 h-4 text-orange shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+    <span id="toast-msg" class="text-sm font-medium text-white"></span>
+  </div>
+
+  <!-- PAGE HEADER -->
+  <section class="shop-bg grain relative pt-32 pb-16 overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(20,120,212,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(20,120,212,0.04) 1px, transparent 1px); background-size: 60px 60px;"></div>
+    <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="inline-flex items-center gap-2 bg-horizon/10 border border-horizon/20 rounded-full px-4 py-1.5 mb-6">
+        <span class="w-1.5 h-1.5 rounded-full bg-orange animate-pulse"></span>
+        <span class="text-xs font-mono font-medium text-horizon-light tracking-widest uppercase">Authorized EcoFlow Reseller</span>
+      </div>
+      <h1 class="font-mono font-bold text-4xl lg:text-5xl tracking-tightest text-white mb-4">EcoFlow Products</h1>
+      <p class="text-grey-light text-lg font-light max-w-xl leading-relaxed">Premium solar generators, portable power stations, and smart living gear — sold and supported by VoltFlow.</p>
+    </div>
+  </section>
+
+  <!-- FILTER BAR -->
+  <section class="sticky top-16 lg:top-20 z-30 bg-midnight/95 backdrop-blur border-b border-white/5 py-4">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center gap-3 overflow-x-auto pb-1 scrollbar-none">
+        <span class="text-xs font-mono text-grey-mid shrink-0 mr-2">Filter:</span>
+        <button class="filter-btn active shrink-0 text-xs font-mono font-semibold px-4 py-2 rounded-lg border border-horizon/30 text-grey-light" data-filter="all">All Products</button>
+        <button class="filter-btn shrink-0 text-xs font-mono font-semibold px-4 py-2 rounded-lg border border-white/10 text-grey-light" data-filter="portable">Portable Power</button>
+        <button class="filter-btn shrink-0 text-xs font-mono font-semibold px-4 py-2 rounded-lg border border-white/10 text-grey-light" data-filter="home">Home Backup</button>
+        <button class="filter-btn shrink-0 text-xs font-mono font-semibold px-4 py-2 rounded-lg border border-white/10 text-grey-light" data-filter="smart-living">Smart Living</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCT GRID -->
+  <section class="py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div id="product-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      <p id="no-results" class="hidden text-center text-grey-mid py-16 font-mono text-sm">No products in this category.</p>
+    </div>
+  </section>
+
+  <!-- SCRIPTS -->
+  <script src="products.js"></script>
+  <script src="cart.js"></script>
+  <script>
+    const grid = document.getElementById('product-grid');
+    const noResults = document.getElementById('no-results');
+    let activeFilter = 'all';
+
+    const categoryLabel = { portable: 'Portable Power', home: 'Home Backup', 'smart-living': 'Smart Living' };
+
+    function formatPrice(dollars) {
+      return '$' + dollars.toLocaleString('en-US');
+    }
+
+    function renderProducts() {
+      const filtered = activeFilter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === activeFilter);
+      noResults.classList.toggle('hidden', filtered.length > 0);
+
+      grid.innerHTML = filtered.map(p => `
+        <div class="product-card rounded-2xl overflow-hidden flex flex-col" data-id="${p.id}">
+          <!-- Image -->
+          <div class="relative overflow-hidden" style="aspect-ratio: 4/3;">
+            <img src="${p.image}" alt="${p.brand} ${p.name}" class="w-full h-full object-cover" loading="lazy" />
+            <div class="absolute inset-0 bg-gradient-to-t from-midnight/70 via-midnight/10 to-transparent"></div>
+            <div class="absolute inset-0" style="background: rgba(20,120,212,0.05); mix-blend-mode: multiply;"></div>
+            ${p.badge ? `<span class="absolute top-4 left-4 text-xs font-mono font-bold px-3 py-1.5 rounded-full ${p.badge === 'Premium' ? 'bg-orange/90 text-white' : p.badge === 'Best Seller' ? 'bg-horizon text-white' : 'bg-navy-light/90 text-horizon-light border border-horizon/30'}">${p.badge}</span>` : ''}
+            <span class="absolute top-4 right-4 text-xs font-mono font-medium px-2.5 py-1 rounded-full bg-midnight/70 text-grey-light border border-white/10">${categoryLabel[p.category]}</span>
+          </div>
+
+          <!-- Content -->
+          <div class="flex flex-col flex-1 p-6">
+            <div class="mb-1">
+              <span class="text-xs font-mono text-grey-mid uppercase tracking-widest">${p.brand}</span>
+            </div>
+            <h3 class="font-mono font-bold text-xl text-white tracking-tight mb-1">${p.name}</h3>
+            <p class="text-grey-light text-sm font-light leading-relaxed mb-4 flex-1">${p.tagline}</p>
+
+            <!-- Specs pills -->
+            <div class="flex flex-wrap gap-2 mb-5">
+              <span class="text-xs font-mono px-2.5 py-1 rounded-md bg-midnight/60 border border-white/8 text-grey-light">
+                <span class="text-grey-mid mr-1">Cap</span>${p.specs.capacity}
+              </span>
+              <span class="text-xs font-mono px-2.5 py-1 rounded-md bg-midnight/60 border border-white/8 text-grey-light">
+                <span class="text-grey-mid mr-1">Out</span>${p.specs.output}
+              </span>
+              <span class="text-xs font-mono px-2.5 py-1 rounded-md bg-midnight/60 border border-white/8 text-grey-light">
+                <span class="text-grey-mid mr-1">Wt</span>${p.specs.weight}
+              </span>
+            </div>
+
+            <!-- Price + CTA -->
+            <div class="flex items-center justify-between pt-4 border-t border-white/8">
+              <div>
+                <div class="font-mono font-bold text-2xl text-white">${formatPrice(p.displayPrice)}</div>
+                <div class="text-xs text-grey-mid mt-0.5">Free shipping</div>
+              </div>
+              <button
+                class="btn-add bg-orange hover:bg-orange-light active:bg-orange-dark text-white text-xs font-semibold font-mono tracking-wide px-5 py-2.5 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-light focus-visible:ring-offset-2 focus-visible:ring-offset-navy"
+                onclick="addToCart('${p.id}')"
+                aria-label="Add ${p.name} to cart"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function addToCart(id) {
+      const product = PRODUCTS.find(p => p.id === id);
+      if (!product) return;
+      Cart.add(product);
+      showToast(`${product.name} added to cart`);
+      renderCartDrawer();
+    }
+
+    function renderCartDrawer() {
+      const items = Cart.get();
+      const container = document.getElementById('cart-items');
+      const subtotal = document.getElementById('cart-subtotal');
+
+      if (!items.length) {
+        container.innerHTML = `
+          <div class="flex flex-col items-center justify-center h-full py-16 text-center">
+            <svg class="w-10 h-10 text-grey-mid mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <p class="text-grey-mid text-sm font-light">Your cart is empty</p>
+            <p class="text-grey-mid text-xs mt-1">Add some products to get started</p>
+          </div>`;
+        subtotal.textContent = '$0';
+        return;
+      }
+
+      container.innerHTML = items.map(item => `
+        <div class="flex gap-4 py-4 border-b border-white/8 last:border-0">
+          <img src="${item.image}" alt="${item.name}" class="w-16 h-16 rounded-lg object-cover shrink-0 border border-white/10" />
+          <div class="flex-1 min-w-0">
+            <div class="text-xs text-grey-mid font-mono mb-0.5">${item.brand || 'EcoFlow'}</div>
+            <div class="font-mono font-semibold text-sm text-white truncate">${item.name}</div>
+            <div class="font-mono font-bold text-orange text-sm mt-1">$${(item.displayPrice).toLocaleString('en-US')}</div>
+            <div class="flex items-center gap-2 mt-2">
+              <button onclick="changeQty('${item.id}', ${item.qty - 1})" class="w-6 h-6 rounded border border-white/15 text-grey-light hover:text-white hover:border-white/30 flex items-center justify-center text-sm transition-colors duration-200 focus-visible:outline-none">−</button>
+              <span class="font-mono text-xs text-white w-4 text-center">${item.qty}</span>
+              <button onclick="changeQty('${item.id}', ${item.qty + 1})" class="w-6 h-6 rounded border border-white/15 text-grey-light hover:text-white hover:border-white/30 flex items-center justify-center text-sm transition-colors duration-200 focus-visible:outline-none">+</button>
+              <button onclick="removeItem('${item.id}')" class="ml-auto text-grey-mid hover:text-red-400 transition-colors duration-200 focus-visible:outline-none" aria-label="Remove">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      subtotal.textContent = Cart.formatPrice(Cart.total());
+    }
+
+    function changeQty(id, qty) {
+      Cart.updateQty(id, qty);
+      renderCartDrawer();
+    }
+
+    function removeItem(id) {
+      Cart.remove(id);
+      renderCartDrawer();
+    }
+
+    function openCart() {
+      document.getElementById('cart-drawer').classList.add('open');
+      document.getElementById('cart-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      renderCartDrawer();
+    }
+
+    function closeCart() {
+      document.getElementById('cart-drawer').classList.remove('open');
+      document.getElementById('cart-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    // Filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeFilter = btn.dataset.filter;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderProducts();
+      });
+    });
+
+    // Cart button
+    document.getElementById('cart-btn').addEventListener('click', openCart);
+    document.getElementById('cart-btn-mobile').addEventListener('click', openCart);
+
+    // Init
+    renderProducts();
+    renderCartDrawer();
+  </script>
+</body>
+</html>

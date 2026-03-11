@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout — VoltFlow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            midnight: '#0A1628', navy: '#0D1F3C', 'navy-light': '#122847',
+            horizon: '#1478D4', 'horizon-light': '#3A9BE8', 'horizon-dark': '#0D5FAA',
+            orange: '#F5821F', 'orange-light': '#FFA54F', 'orange-dark': '#D4661A',
+            steel: '#4A6080', 'grey-light': '#B8C5D1', 'grey-mid': '#6E8099',
+          },
+          fontFamily: { mono: ['Roboto Mono', 'monospace'], sans: ['Montserrat', 'sans-serif'] },
+          letterSpacing: { tightest: '-0.04em', tighter: '-0.03em' },
+          lineHeight: { relaxed: '1.7' },
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0A1628; }
+    ::-webkit-scrollbar-thumb { background: #1478D4; border-radius: 3px; }
+    .nav-blur { background: rgba(10,22,40,0.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+    .card-surface {
+      background: linear-gradient(135deg, rgba(18,40,71,0.9) 0%, rgba(13,31,60,0.95) 100%);
+      border: 1px solid rgba(20,120,212,0.12);
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 4px 24px -4px rgba(245,130,31,0.35); }
+      50% { box-shadow: 0 4px 32px -2px rgba(245,130,31,0.55); }
+    }
+    .btn-stripe {
+      background: #1478D4;
+      transition: background 0.2s ease, transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .btn-stripe:hover { background: #3A9BE8; transform: translateY(-1px); }
+    .btn-stripe:active { transform: translateY(0); }
+    .btn-stripe:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body class="bg-midnight font-sans text-white overflow-x-hidden">
+
+  <!-- NAVIGATION -->
+  <nav class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 lg:h-20">
+        <a href="index.html" class="flex items-center shrink-0">
+          <img src="brand_assets/Brand_Logo1.png" alt="VoltFlow" class="h-10 lg:h-12 w-auto object-contain" style="max-width:180px;" />
+        </a>
+        <div class="hidden lg:flex items-center gap-8">
+          <a href="index.html#services" class="text-grey-light hover:text-white text-sm font-medium tracking-wide transition-colors duration-200">Services</a>
+          <a href="shop.html" class="text-grey-light hover:text-white text-sm font-medium tracking-wide transition-colors duration-200">Shop</a>
+        </div>
+        <div class="hidden lg:flex items-center gap-3">
+          <a href="index.html#contact" class="text-sm font-medium text-grey-light hover:text-white transition-colors duration-200 px-4 py-2">Contact</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="pt-28 pb-24 min-h-screen">
+    <div class="max-w-4xl mx-auto px-6 lg:px-8">
+
+      <!-- Header -->
+      <div class="mb-10">
+        <div class="inline-flex items-center gap-2 bg-horizon/10 border border-horizon/20 rounded-full px-4 py-1.5 mb-4">
+          <span class="text-xs font-mono font-medium text-horizon-light tracking-widest uppercase">Secure Checkout</span>
+        </div>
+        <h1 class="font-mono font-bold text-3xl lg:text-4xl tracking-tightest text-white">Review Your Order</h1>
+      </div>
+
+      <div class="grid lg:grid-cols-5 gap-8">
+
+        <!-- Cart Items -->
+        <div class="lg:col-span-3">
+          <div class="card-surface rounded-2xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-white/8">
+              <h2 class="font-mono font-semibold text-sm text-white tracking-tight">Order Items</h2>
+            </div>
+            <div id="checkout-items" class="divide-y divide-white/8"></div>
+
+            <!-- Empty state -->
+            <div id="empty-cart" class="hidden px-6 py-16 text-center">
+              <svg class="w-10 h-10 text-grey-mid mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+              <p class="text-grey-mid text-sm font-light mb-4">Your cart is empty</p>
+              <a href="shop.html" class="text-sm font-mono font-semibold text-horizon hover:text-horizon-light transition-colors duration-200">Browse Products</a>
+            </div>
+          </div>
+
+          <!-- Back to shop -->
+          <a href="shop.html" class="inline-flex items-center gap-2 mt-5 text-sm font-medium text-grey-mid hover:text-white transition-colors duration-200">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Continue shopping
+          </a>
+        </div>
+
+        <!-- Order Summary + Payment -->
+        <div class="lg:col-span-2">
+          <div class="card-surface rounded-2xl p-6 sticky top-28">
+            <h2 class="font-mono font-semibold text-sm text-white tracking-tight mb-5">Order Summary</h2>
+
+            <div class="space-y-3 mb-5 pb-5 border-b border-white/8">
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-grey-light font-light">Subtotal</span>
+                <span id="summary-subtotal" class="font-mono font-semibold text-white">$0</span>
+              </div>
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-grey-light font-light">Shipping</span>
+                <span class="font-mono font-semibold text-orange text-xs">FREE</span>
+              </div>
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-grey-light font-light">Tax</span>
+                <span class="text-grey-mid text-xs font-mono">Calculated at checkout</span>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between mb-6">
+              <span class="font-mono font-bold text-white">Total</span>
+              <span id="summary-total" class="font-mono font-bold text-white text-2xl">$0</span>
+            </div>
+
+            <!-- Pay with Stripe -->
+            <button id="stripe-btn" onclick="startStripeCheckout()" class="btn-stripe w-full flex items-center justify-center gap-2.5 text-white text-sm font-semibold font-mono tracking-wide px-6 py-4 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-horizon-light focus-visible:ring-offset-2 focus-visible:ring-offset-navy mb-3">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z"/></svg>
+              <span id="stripe-btn-label">Pay with Stripe</span>
+              <div class="spinner" id="stripe-spinner"></div>
+            </button>
+
+            <!-- Trust badges -->
+            <div class="mt-5 pt-4 border-t border-white/8 space-y-2">
+              <div class="flex items-center gap-2 text-xs text-grey-mid">
+                <svg class="w-3.5 h-3.5 text-horizon shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                256-bit SSL encryption
+              </div>
+              <div class="flex items-center gap-2 text-xs text-grey-mid">
+                <svg class="w-3.5 h-3.5 text-horizon shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                Powered by Stripe — PCI compliant
+              </div>
+              <div class="flex items-center gap-2 text-xs text-grey-mid">
+                <svg class="w-3.5 h-3.5 text-horizon shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                Visa, Mastercard, Amex accepted
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="products.js"></script>
+  <script src="cart.js"></script>
+  <script>
+    function renderCheckout() {
+      const items = Cart.get();
+      const container = document.getElementById('checkout-items');
+      const emptyState = document.getElementById('empty-cart');
+      const stripeBtn = document.getElementById('stripe-btn');
+
+      if (!items.length) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        stripeBtn.disabled = true;
+        document.getElementById('summary-subtotal').textContent = '$0';
+        document.getElementById('summary-total').textContent = '$0';
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      stripeBtn.disabled = false;
+
+      container.innerHTML = items.map(item => `
+        <div class="flex gap-4 px-6 py-5">
+          <img src="${item.image}" alt="${item.name}" class="w-20 h-20 rounded-xl object-cover shrink-0 border border-white/10" />
+          <div class="flex-1 min-w-0">
+            <div class="text-xs font-mono text-grey-mid mb-0.5">${item.brand || 'EcoFlow'}</div>
+            <div class="font-mono font-semibold text-white truncate">${item.name}</div>
+            <div class="font-mono font-bold text-orange mt-1">$${item.displayPrice.toLocaleString('en-US')}</div>
+            <div class="flex items-center gap-2 mt-2">
+              <button onclick="changeQty('${item.id}', ${item.qty - 1})" class="w-7 h-7 rounded-lg border border-white/15 text-grey-light hover:text-white hover:border-white/30 flex items-center justify-center transition-colors duration-200 focus-visible:outline-none">−</button>
+              <span class="font-mono text-sm text-white w-5 text-center">${item.qty}</span>
+              <button onclick="changeQty('${item.id}', ${item.qty + 1})" class="w-7 h-7 rounded-lg border border-white/15 text-grey-light hover:text-white hover:border-white/30 flex items-center justify-center transition-colors duration-200 focus-visible:outline-none">+</button>
+              <button onclick="removeItem('${item.id}')" class="ml-auto flex items-center gap-1 text-xs text-grey-mid hover:text-red-400 transition-colors duration-200 focus-visible:outline-none">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                Remove
+              </button>
+            </div>
+          </div>
+          <div class="text-right shrink-0">
+            <div class="font-mono font-bold text-white">$${(item.displayPrice * item.qty).toLocaleString('en-US')}</div>
+            <div class="text-xs text-grey-mid mt-0.5">x${item.qty}</div>
+          </div>
+        </div>
+      `).join('');
+
+      const total = Cart.total();
+      const formatted = Cart.formatPrice(total);
+      document.getElementById('summary-subtotal').textContent = formatted;
+      document.getElementById('summary-total').textContent = formatted;
+    }
+
+    function changeQty(id, qty) {
+      Cart.updateQty(id, qty);
+      renderCheckout();
+    }
+
+    function removeItem(id) {
+      Cart.remove(id);
+      renderCheckout();
+    }
+
+    async function startStripeCheckout() {
+      const items = Cart.get();
+      if (!items.length) return;
+
+      const btn = document.getElementById('stripe-btn');
+      const label = document.getElementById('stripe-btn-label');
+      const spinner = document.getElementById('stripe-spinner');
+
+      btn.disabled = true;
+      label.textContent = 'Redirecting...';
+      spinner.style.display = 'block';
+
+      try {
+        const res = await fetch('/api/create-checkout-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ items }),
+        });
+        const data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          throw new Error(data.error || 'Failed to create checkout session');
+        }
+      } catch (err) {
+        console.error(err);
+        label.textContent = 'Something went wrong — try again';
+        spinner.style.display = 'none';
+        btn.disabled = false;
+        setTimeout(() => { label.textContent = 'Pay with Stripe'; }, 3000);
+      }
+    }
+
+    renderCheckout();
+  </script>
+</body>
+</html>

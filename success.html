@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Confirmed — VoltFlow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            midnight: '#0A1628', navy: '#0D1F3C', 'navy-light': '#122847',
+            horizon: '#1478D4', 'horizon-light': '#3A9BE8',
+            orange: '#F5821F', 'orange-light': '#FFA54F',
+            steel: '#4A6080', 'grey-light': '#B8C5D1', 'grey-mid': '#6E8099',
+          },
+          fontFamily: { mono: ['Roboto Mono', 'monospace'], sans: ['Montserrat', 'sans-serif'] },
+          letterSpacing: { tightest: '-0.04em' },
+        }
+      }
+    }
+  </script>
+  <style>
+    .nav-blur { background: rgba(10,22,40,0.88); backdrop-filter: blur(16px); }
+    .card-surface {
+      background: linear-gradient(135deg, rgba(18,40,71,0.9) 0%, rgba(13,31,60,0.95) 100%);
+      border: 1px solid rgba(20,120,212,0.12);
+    }
+    @keyframes check-in {
+      0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+      60% { transform: scale(1.15) rotate(5deg); }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+    .check-anim { animation: check-in 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.3s both; }
+    @keyframes fade-up {
+      from { transform: translateY(16px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .fade-up { animation: fade-up 0.5s ease 0.7s both; }
+  </style>
+</head>
+<body class="bg-midnight font-sans text-white min-h-screen">
+  <nav class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 lg:h-20">
+        <a href="index.html">
+          <img src="brand_assets/Brand_Logo1.png" alt="VoltFlow" class="h-10 lg:h-12 w-auto object-contain" style="max-width:180px;" />
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex items-center justify-center min-h-screen px-6 pt-16">
+    <div class="text-center max-w-lg w-full">
+      <!-- Check icon -->
+      <div class="check-anim inline-flex items-center justify-center w-24 h-24 rounded-full mb-8" style="background: radial-gradient(circle, rgba(20,120,212,0.2) 0%, rgba(10,22,40,0.8) 70%); border: 1px solid rgba(20,120,212,0.3); box-shadow: 0 0 40px rgba(20,120,212,0.2);">
+        <svg class="w-12 h-12 text-horizon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+
+      <div class="fade-up">
+        <div class="inline-flex items-center gap-2 bg-horizon/10 border border-horizon/20 rounded-full px-4 py-1.5 mb-5">
+          <span class="w-1.5 h-1.5 rounded-full bg-orange animate-pulse"></span>
+          <span class="text-xs font-mono font-medium text-horizon-light tracking-widest uppercase">Order Confirmed</span>
+        </div>
+
+        <h1 class="font-mono font-bold text-4xl tracking-tightest text-white mb-4">Thank You!</h1>
+        <p class="text-grey-light font-light text-lg leading-relaxed mb-8">
+          Your order has been placed and is being processed. You'll receive a confirmation email shortly.
+        </p>
+
+        <div class="card-surface rounded-2xl p-6 text-left mb-8">
+          <div class="space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-orange/15 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 text-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              </div>
+              <div>
+                <div class="text-xs text-grey-mid font-mono">Next step</div>
+                <div class="text-sm text-white font-medium">Confirmation email on its way</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-horizon/15 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 text-horizon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+              </div>
+              <div>
+                <div class="text-xs text-grey-mid font-mono">Shipping</div>
+                <div class="text-sm text-white font-medium">Free shipping on all orders</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-horizon/15 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 text-horizon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+              </div>
+              <div>
+                <div class="text-xs text-grey-mid font-mono">Support</div>
+                <div class="text-sm text-white font-medium">Questions? Contact us anytime</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+          <a href="shop.html" class="bg-orange hover:bg-orange-light active:bg-orange-dark text-white text-sm font-semibold font-mono tracking-wide px-8 py-3.5 rounded-xl transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-light focus-visible:ring-offset-2 focus-visible:ring-offset-midnight">
+            Continue Shopping
+          </a>
+          <a href="index.html" class="text-sm font-medium font-mono text-grey-light hover:text-white px-8 py-3.5 rounded-xl border border-white/15 hover:border-white/30 transition-colors duration-200">
+            Back to Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="cart.js"></script>
+  <script>
+    // Clear cart on successful payment
+    Cart.clear();
+  </script>
+</body>
+</html>
